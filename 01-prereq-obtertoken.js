@@ -1,0 +1,1 @@
+pm.collectionVariables.set("tokenADB2C", "");

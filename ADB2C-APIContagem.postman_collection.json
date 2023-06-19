@@ -1,0 +1,188 @@
+{
+	"info": {
+		"_postman_id": "ea98a4c6-c101-4baf-ae2a-42a2d450b47a",
+		"name": "ADB2C-APIContagem",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "4157995",
+		"_collection_link": "https://orange-sunset-474035.postman.co/workspace/My-Workspace~1e828e49-1509-4d69-8123-1e344c197413/collection/4157995-ea98a4c6-c101-4baf-ae2a-42a2d450b47a?action=share&creator=4157995&source=collection_link"
+	},
+	"item": [
+		{
+			"name": "Obter Token",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"pm.collectionVariables.set(\"tokenADB2C\", \"\");"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Retorno OK Login\", function() {\r",
+							"    pm.response.to.be.ok;\r",
+							"    pm.response.to.json;\r",
+							"    pm.response.to.be.withBody;\r",
+							"});\r",
+							"\r",
+							"var result = pm.response.json();\r",
+							"\r",
+							"pm.test(\"Verificar se token foi gerado\", function() {\r",
+							"    pm.expect(result.access_token).not.undefined;\r",
+							"    pm.expect(result.access_token).not.null;\r",
+							"    pm.collectionVariables.set(\"tokenADB2C\", result.access_token)\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "grant_type",
+							"value": "client_credentials",
+							"type": "text"
+						},
+						{
+							"key": "client_id",
+							"value": "{{consumer_application_id}}",
+							"type": "text"
+						},
+						{
+							"key": "client_secret",
+							"value": "{{consumer_secret}}",
+							"type": "text"
+						},
+						{
+							"key": "scope",
+							"value": "https://{{tenant_name}}.onmicrosoft.com/{{restapi_application_id}}/.default",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "https://{{tenant_name}}.b2clogin.com/{{tenant_name}}.onmicrosoft.com/{{policy_name}}/oauth2/v2.0/token",
+					"protocol": "https",
+					"host": [
+						"{{tenant_name}}",
+						"b2clogin",
+						"com"
+					],
+					"path": [
+						"{{tenant_name}}.onmicrosoft.com",
+						"{{policy_name}}",
+						"oauth2",
+						"v2.0",
+						"token"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Utilizar Token",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Retorno OK\", function() {\r",
+							"    pm.response.to.be.ok;\r",
+							"    pm.response.to.json;\r",
+							"    pm.response.to.be.withBody;\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{tokenADB2C}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{test_url}}",
+					"host": [
+						"{{test_url}}"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "tokenADB2C",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "tenant_name",
+			"value": "NAME_TENANT",
+			"type": "string"
+		},
+		{
+			"key": "policy_name",
+			"value": "NAME_USERFLOW",
+			"type": "string"
+		},
+		{
+			"key": "restapi_application_id",
+			"value": "ID_API_REST",
+			"type": "string"
+		},
+		{
+			"key": "consumer_application_id",
+			"value": "ID_CONSUMER",
+			"type": "string"
+		},
+		{
+			"key": "consumer_secret",
+			"value": "SECRET_CONSUMER",
+			"type": "string"
+		},
+		{
+			"key": "test_url",
+			"value": "http://localhost:8001/Contador",
+			"type": "string"
+		}
+	]
+}
